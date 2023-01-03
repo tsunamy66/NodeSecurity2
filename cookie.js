@@ -6,7 +6,7 @@ var express = require('express')
 
 app.use(cookieParser())
 app.use(session({ keys: ['abc'], name: 'user' }));
-// app.use(express_sess({ secret: 'abc', key: 'user'}));
+//  app.use(express_sess({ secret: 'abc', key: 'user'}));
 app.get('/', function (req, res, next) {
     res.end(JSON.stringify(req.cookies));
     console.log('req.session', req.session);

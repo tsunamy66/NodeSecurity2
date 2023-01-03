@@ -23,7 +23,7 @@ const AUTH_OPTIONS = {
 console.log("process.env.CLIENT_SECRET: ", process.env.CLIENT_SECRET);
 
 passport.use(new Strategy(AUTH_OPTIONS,
-    function ( accessToken, refreshToken, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
         // User.findOrCreate({ googleId: profile.id },
         //     function (err, user) {
         console.log("PROFILE: ", profile);
@@ -47,15 +47,21 @@ passport.deserializeUser(function (id, done) {
     underScore('deserialize', 50)
 });
 
-app.use(session({
+app.use(function (req, res, next) {
+    console.log("req.user{bfrsession}:", req.user);
+    console.log("req.session{bfrsession}:", req.session);
+    console.log("req.sessionID{bfrsession}: ", req.sessionID);
+    console.log("req.cookies{bfrsession}:", req.cookies);
+    next()
+}, session({
     secret: 'keyboard cat',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { secureProxy: true, maxAge: 10 * 60 * 1000, name: 'Fathi' }
 }), function (req, res, next) {
-    console.log("req.user{keyboardcat}:", req.user);
-    console.log("req.session{keyboardcat}:", req.session);
-    console.log("req.cookies{keyboardcat}:", req.cookies);
+    console.log("req.user{session}:", req.user);
+    console.log("req.session{session}:", req.session);
+    console.log("req.cookies{session}:", req.cookies);
     underScore('keyboard', 50)
     next();
 });
@@ -142,13 +148,13 @@ app.get('/',
         res.write('<a href="/auth/google" >' + "Google Login" + '</a> <br>')
         res.write('<a href="/auth/logout" >' + 'Sign out' + '</a> <br>')
         if (req.session.views) {
-            req.session.views++
-            res.write('<p>views: ' + req.session.views + '</p>')
+            req.session.views.counter++
+            res.write('<p>views: ' + req.session.views.counter + '</p>')
             res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')
             res.end()
         } else {
-            req.session.views = 1
-            console.log('req.session.views: ', req.session.views);
+            req.session.views={counter : 1}
+            console.log('req.session.views: ', req.session.views.counter);
             res.end('     welcome to the session demo. refresh!')
         }
     }
@@ -162,3 +168,5 @@ const options = {
 https.createServer(options, app).listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+
+
