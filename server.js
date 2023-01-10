@@ -59,23 +59,25 @@ app.use(function (req, res, next) {
     saveUninitialized: false,
     cookie: { secureProxy: true, maxAge: 10 * 60 * 1000, name: 'Fathi' }
 }), function (req, res, next) {
-    console.log("req.user{session}:", req.user);
-    console.log("req.session{session}:", req.session);
-    console.log("req.cookies{session}:", req.cookies);
+    console.log("req.user{aftsession}:", req.user);
+    console.log("req.session{aftsession}:", req.session);
+    console.log("req.cookies{aftsession}:", req.cookies);
     underScore('keyboard', 50)
     next();
 });
 app.use(passport.initialize(), function (req, res, next) {
-    console.log("req.user{initialize}: ", req.user);
-    console.log("req.session{initialize}: ", req.session);
-    console.log("req.cookies{initialize}: ", req.cookies);
-    underScore('initialize', 50)
+    // console.log("req.user{initialize}: ", req.user);
+    // console.log("req.session{initialize}: ", req.session);
+    // console.log("req.cookies{initialize}: ", req.cookies);
+    // underScore('initialize', 50)
     next();
 }); //initialize passport
+
+//کاربری که ثبت نام شده باشه یعنی پاسپورت در سشن توسط اکسپرس سشن ضمیمه شده باشه با پاسپورت.سشن به دیسریالایز فرستاده میشه
 app.use(passport.session(), function (req, res, next) {
-    console.log("req.user{session}: ", req.user);
-    console.log("req.session{session}: ", req.session);
-    console.log("req.cookies{session}: ", req.cookies);
+    // console.log("req.user{session}: ", req.user);
+    // console.log("req.session{session}: ", req.session);
+    // console.log("req.cookies{session}: ", req.cookies);
     underScore('session', 50)
     next();
 }) //creates req.user
@@ -153,8 +155,12 @@ app.get('/',
             res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')
             res.end()
         } else {
+            // req.session.passport = { user : "Hojat"}
+            // req.user = "Hojat"
             req.session.views={counter : 1}
-            console.log('req.session.views: ', req.session.views.counter);
+            console.log('req.session.views.counter: ', req.session.views.counter);
+            console.log('req.session|>', req.session);
+            console.log('req.user|>', req.user);
             res.end('     welcome to the session demo. refresh!')
         }
     }
